@@ -1,27 +1,27 @@
-var db = require("../models");
+var db = require("../models/");
 
 var express = require("express");
 
 var router = express.Router();
 
-// Import the model (burger.js) to use its database functions.
-var burger = require("../models/burger.js");
+
+
+router.get("/", function (req, res) {
+  res.redirect("/burgers");
+});
 
 // Create all our routes and set up logic within those routes where required.
-router.get("/", function(req, res) {
-db.Burgers.findAll({
-    include: [db.Burgers]
-    }).then(function(dbAuthor) {
-      res.json(dbBurgers);
+router.get("/burgers", function(req, res) {
+db.burgers.findAll().then(function(dbBurgers) {
+      var hbsObject = {burger: dbBurgers};
+      return res.render("index", hbsObject);
     });
 });
 
-router.post("/", function(req, res) {
-  db.Burgers.create([
-    "burger_name", "devoured"
-  ], [
-    req.body.burger_name, req.body.devoured
-  ], function() {
+router.post("/burgers/create", function(req, res) {
+  db.burgers.create({
+    burger_name: req.body.burger_name
+  }).then(function(dbBurgers) {
     res.redirect("/");
   });
 });
